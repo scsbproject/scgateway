@@ -1,6 +1,7 @@
 package com.cyvation.scgateway.swagger;
 
 import com.cyvation.scgateway.config.GatewayConfig;
+import com.cyvation.scgateway.core.Constant;
 import com.cyvation.scgateway.util.SpringContextUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +31,32 @@ import java.util.List;
 public class SwaggerProvider implements SwaggerResourcesProvider {
     public static final String API_URI = "/v2/api-docs";
 
+    private static final String SERVER_ID_PREFIX = "CompositeDiscoveryClient_"; //nacos注册中心拉取服务的id前缀
+
     //private final Discover---------yClientRouteDefinitionLocator routeLocator;
 
     private final RouteDefinitionLocator routeLocator;
 
-    public SwaggerProvider(RouteDefinitionLocator routeLocator) {
+    private final GatewayConfig gatewayConfig;
+
+    public SwaggerProvider(RouteDefinitionLocator routeLocator,
+                           GatewayConfig gatewayConfig) {
         this.routeLocator = routeLocator;
+        this.gatewayConfig = gatewayConfig;
     }
 
     @Override
     public List<SwaggerResource> get() {
 
-        DiscoveryClientRouteDefinitionLocator discoveryClientRouteDefinitionLocator = (DiscoveryClientRouteDefinitionLocator) SpringContextUtil.getBean(DiscoveryClientRouteDefinitionLocator.class);
-
         List<SwaggerResource> resources = new ArrayList<>();
         //从DiscoveryClientRouteDefinitionLocator 中取出routes，构造成swaggerResource
         routeLocator.getRouteDefinitions().subscribe(routeDefinition -> {
             String serverId = routeDefinition.getId();
-            String location = "";
+            //连入nacos环境
+            if (Constant.SysEnv.NACOS.equalsIgnoreCase(gatewayConfig.getProfilesActive())){
+                serverId = serverId.replace(SERVER_ID_PREFIX,"");
+            }
+            String location;
             if (routeDefinition.getPredicates().get(0).getArgs().get("pattern") != null) {
                 //通过接口动态添加的路由，key为pattern
                 location = routeDefinition.getPredicates().get(0).getArgs().get("pattern").replace("/**", API_URI);
