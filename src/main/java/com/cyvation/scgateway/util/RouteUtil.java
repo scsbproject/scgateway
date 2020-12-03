@@ -53,13 +53,15 @@ public class RouteUtil {
         //设置过滤器
         List<FilterDefinition> filters = new ArrayList();
         List<GatewayFilterDefinition> gatewayFilters = gwdefinition.getFilters();
-        for(GatewayFilterDefinition filterDefinition : gatewayFilters){
-            FilterDefinition filter = new FilterDefinition();
-            filter.setName(filterDefinition.getName());
-            filter.setArgs(filterDefinition.getArgs());
-            filters.add(filter);
+        if (gatewayFilters != null) {
+            for (GatewayFilterDefinition filterDefinition : gatewayFilters) {
+                FilterDefinition filter = new FilterDefinition();
+                filter.setName(filterDefinition.getName());
+                filter.setArgs(filterDefinition.getArgs());
+                filters.add(filter);
+            }
+            definition.setFilters(filters);
         }
-        definition.setFilters(filters);
 
         URI uri = null;
         if(gwdefinition.getUri().startsWith("http")){

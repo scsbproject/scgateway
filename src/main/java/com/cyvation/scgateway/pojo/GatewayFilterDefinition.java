@@ -7,6 +7,7 @@ import java.util.Map;
  * 创建过滤器定义模型
  */
 public class GatewayFilterDefinition{
+
     //Filter Name
     private String name;
 

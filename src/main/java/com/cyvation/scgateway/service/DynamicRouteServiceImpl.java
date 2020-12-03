@@ -1,7 +1,6 @@
 package com.cyvation.scgateway.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.*;
 import org.springframework.cloud.gateway.support.NotFoundException;
@@ -27,7 +26,8 @@ public class DynamicRouteServiceImpl implements ApplicationEventPublisherAware {
     private RouteDefinitionLocator routeDefinitionLocator;
 
     @Autowired
-    public DynamicRouteServiceImpl(RouteDefinitionWriter routeDefinitionWriter,RouteDefinitionLocator routeDefinitionLocator){
+    public DynamicRouteServiceImpl(RouteDefinitionWriter routeDefinitionWriter,
+                                   RouteDefinitionLocator routeDefinitionLocator){
         this.routeDefinitionWriter = routeDefinitionWriter;
         this.routeDefinitionLocator = routeDefinitionLocator;
     }

@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
  * 说明：路由控制器，向外部应用提供路由管理的接口，可以对路由进行增删改查
  */
 @RestController
-@RequestMapping("/route")
+@RequestMapping("/gateway/route")
 public class RouteController {
 
     private DynamicRouteServiceImpl dynamicRouteService;
@@ -26,13 +26,16 @@ public class RouteController {
     //增加路由
     @PostMapping("/add")
     public String add(@RequestBody GatewayRouteDefinition gwdefinition){
+        String msg = "";
         try {
             RouteDefinition definition = RouteUtil.assembleRouteDefinition(gwdefinition);
             return this.dynamicRouteService.add(definition);
         } catch (Exception e) {
             e.printStackTrace();
+            msg =  "false";
         }
-        return "succss";
+        msg = "succss";
+        return msg;
     }
 
     //删除路由
