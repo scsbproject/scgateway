@@ -59,7 +59,7 @@ public class GlobalGatewayRequestFilter implements GlobalFilter,Ordered {
                 try {
                     //
                     String url = uri.getPath();
-                    if (url.indexOf("v2/api-docs") != -1 && Constant.SysEnv.ALONG.equalsIgnoreCase(gatewayConfig.getProfilesActive())){
+                    if (url.indexOf("v2/api-docs") != -1 && Constant.SysEnv.STANDALONE.equalsIgnoreCase(gatewayConfig.getProfilesActive())){
                         url = url.substring(url.indexOf("/") + 1);
                         url = url.substring(url.indexOf("/") + 1);
                     }

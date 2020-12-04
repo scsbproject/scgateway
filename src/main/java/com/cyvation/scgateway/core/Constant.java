@@ -11,7 +11,7 @@ public class Constant {
     public static class SysEnv{
 
         /**单机版*/
-        public final static String ALONG = "along";
+        public final static String STANDALONE = "standalone";
 
         /**连入nacos注册中心*/
         public final static String NACOS = "nacos";

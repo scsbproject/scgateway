@@ -6,7 +6,7 @@
   
  # 2. 使用方式
  ## 2.1 单机版本
-  将配置文件application.yml中的spring.profiles.active配置成along，然后去掉如下依赖：  
+  将配置文件application.yml中的spring.profiles.active配置成standalone，然后去掉如下依赖：  
   ```
   <dependencyManagement>
           <dependencies>
@@ -68,7 +68,7 @@
    //@EnableDiscoveryClient
    public class SCGatewayApplication {
 ```  
-然后在application-along.properties中配置路由规则，如下：
+然后在application-standalone.properties中配置路由规则，如下：
 ```
 #单机版，无注册中心的配置，如果是单机版，被转发的目标服务的路径必须带上服务名称进行请求，也就是控制器必须带上服务名称
 spring.cloud.gateway.routes[0].id=测试服务

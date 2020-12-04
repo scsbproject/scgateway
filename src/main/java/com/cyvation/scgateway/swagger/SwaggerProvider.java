@@ -5,6 +5,7 @@ import com.cyvation.scgateway.core.Constant;
 import com.cyvation.scgateway.util.SpringContextUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
@@ -17,6 +18,7 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @version: V1.0
@@ -39,6 +41,9 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
 
     private final GatewayConfig gatewayConfig;
 
+    @Value("${spring.application.name}")
+    private String serverName;
+
     public SwaggerProvider(RouteDefinitionLocator routeLocator,
                            GatewayConfig gatewayConfig) {
         this.routeLocator = routeLocator;
@@ -53,17 +58,21 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
         routeLocator.getRouteDefinitions().subscribe(routeDefinition -> {
             String serverId = routeDefinition.getId();
             //连入nacos环境
-            if (Constant.SysEnv.NACOS.equalsIgnoreCase(gatewayConfig.getProfilesActive())){
-                serverId = serverId.replace(SERVER_ID_PREFIX,"");
+            if (Constant.SysEnv.NACOS.equalsIgnoreCase(gatewayConfig.getProfilesActive())) {
+                serverId = serverId.replace(SERVER_ID_PREFIX, "");
             }
-            String location;
-            if (routeDefinition.getPredicates().get(0).getArgs().get("pattern") != null) {
-                //通过接口动态添加的路由，key为pattern
-                location = routeDefinition.getPredicates().get(0).getArgs().get("pattern").replace("/**", API_URI);
-            }else{
-                location = routeDefinition.getPredicates().get(0).getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", API_URI);
+            String tmpServerId = serverId;
+            List<SwaggerResource> tmpResource = resources.stream().filter(item -> item.getName().equalsIgnoreCase(tmpServerId)).collect(Collectors.toList());
+            if ((tmpResource == null || tmpResource.size() == 0) && !serverId.equalsIgnoreCase(serverName)) {//去掉重复的和当前服务的
+                String location;
+                if (routeDefinition.getPredicates().get(0).getArgs().get("pattern") != null) {
+                    //通过接口动态添加的路由，key为pattern
+                    location = routeDefinition.getPredicates().get(0).getArgs().get("pattern").replace("/**", API_URI);
+                } else {
+                    location = routeDefinition.getPredicates().get(0).getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", API_URI);
+                }
+                resources.add(swaggerResource(serverId, location));
             }
-            resources.add(swaggerResource(serverId,location));
         });
         return resources;
     }
