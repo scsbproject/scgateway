@@ -75,7 +75,9 @@ spring.cloud.gateway.routes[0].id=测试服务
 spring.cloud.gateway.routes[0].predicates[0]=Path=/test-service/**
 spring.cloud.gateway.routes[0].uri=http://192.168.7.153:8088
 ```
-这里需要注意的是：单机版服务，目标服务的所有rest接口需要加服务名称：@RequestMapping("${spring.application.name}")
+这里需要注意的是：单机版服务，目标服务的所有rest接口需要加服务名称：@RequestMapping("${spring.application.name}")  
+
+启动完成成服务之后，访问地址：127.0.0.1:8080/doc.html
 
 ## 2.2 nacos版本使用
 将application.properties的spring.profiles.active配置成nacos  
@@ -149,4 +151,4 @@ spring.cloud.nacos.config.server-addr=192.168.2.137:7747
 #spring.cloud.nacos.config.file-extension=properties
 #spring.cloud.nacos.config.group=DEFAULT_GROUP
 ```
-然后启动服务
+然后启动服务，访问地址：127.0.0.1:8080/doc.html

@@ -1,6 +1,7 @@
 package com.cyvation.scgateway;
 
 //import com.cyvation.scgateway.config.QuartzScheduler;
+import com.cyvation.scgateway.config.ServerStartEventListener;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version 1.0.0.1
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 public class SCGatewayApplication {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SCGatewayApplication.class);
@@ -27,6 +28,9 @@ public class SCGatewayApplication {
      */
     public static void main(String[] args){
         configurableApplicationContext = SpringApplication.run(SCGatewayApplication.class,args);
+        configurableApplicationContext.addApplicationListener(new ServerStartEventListener());
+//        configurableApplicationContext.publishEvent(new ServerStartEventListener());  //发布消息
+//        configurableApplicationContext.close();
 //        startTask(configurableApplicationContext);
     }
 
